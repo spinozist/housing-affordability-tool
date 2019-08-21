@@ -135,7 +135,7 @@ const App = () => {
             </div> : null }
             <h2>Proportion of income spent on mortgage payments* each month...</h2>
             {tractData ? <ColorRamp /> : null }
-            <p style={{float: 'right', fontSize: '1.2em'}}><strong>*</strong>for a home priced at a census tract's median home value with 3% down and a 4.5% 30-year fixed mortgage</p>
+            <p style={{float: 'right', fontSize: '1.2em'}}><strong>*</strong>for a home priced at a census tract's median home value with  a 4.5% 30-year fixed mortgage</p>
             <p style={{float: 'left'}}><strong>Data source:</strong> US Census Bureau, American Community Survey (ACS), 5-year estimates, 2013-17</p>
         </div>
     )
