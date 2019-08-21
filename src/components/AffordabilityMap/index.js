@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Map as LeafletMap, TileLayer, GeoJSON } from 'react-leaflet';
 import colormap from 'colormap';
 
@@ -25,7 +25,7 @@ const AffordabilityMap = props => {
           zoom={9}
           maxZoom={18}
           attributionControl={true}
-          zoomControl={true}
+          zoomControl={false}
           doubleClickZoom={true}
           scrollWheelZoom={true}
           dragging={true}
@@ -58,7 +58,7 @@ const AffordabilityMap = props => {
                 color: value < minValue ? colors[0] : value > maxValue ? colors[colors.length -1] : color,
                 weight: 1,
                 fillColor: value < minValue ? colors[0] : value > maxValue ? colors[colors.length -1] : color,
-                fillOpacity: value ? 1 : 0
+                fillOpacity: value ? .9 : 0
             })
           }}
         /> : null

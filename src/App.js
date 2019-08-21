@@ -11,35 +11,35 @@ const saleValueByTract = require('./data/median-sale-price.json');
 
 
 const App = () => {
-    const [income, setIncome] = useState(50000);
+    const [income, setIncome] = useState(65381);
     const [tractData, setTractData] = useState();
-    const [affordablePayment, setAffordablePayment] = useState();
-    const [salePrice, setSalePrice] = useState();
-    const [percentOfIncome , setPercentOfIncome] = useState();
-    const [affordableLoan, setAffordableLoan] = useState();
+    // const [affordablePayment, setAffordablePayment] = useState();
+    // const [salePrice, setSalePrice] = useState();
+    // const [percentOfIncome , setPercentOfIncome] = useState();
+    // const [affordableLoan, setAffordableLoan] = useState();
     const [tractLayer, setTractLayer] = useState();
     const padding = 10;
 
     const sliderSettings = {
         start: income,
-        min: 20000,
+        min: 10000,
         max: 250000,
         step: 1000,
         onChange: value => setIncome(value)
     }
     // console.log(income);
 
-    const affordableLoanCalc = (income, year, apr) => {
-        const percentOfIncome = .2;
-        const affordablePayment = (income * percentOfIncome)/12;
-        const n = year * 12;
-        const c = apr/12;
-        const paymentDivisor = (c * Math.pow((c + 1),n))/(Math.pow((c + 1), n) - 1);
-        const affordableLoan = parseFloat(affordablePayment) / parseFloat(paymentDivisor);    
+    // const affordableLoanCalc = (income, year, apr) => {
+    //     const percentOfIncome = .2;
+    //     const affordablePayment = (income * percentOfIncome)/12;
+    //     const n = year * 12;
+    //     const c = apr/12;
+    //     const paymentDivisor = (c * Math.pow((c + 1),n))/(Math.pow((c + 1), n) - 1);
+    //     const affordableLoan = parseFloat(affordablePayment) / parseFloat(paymentDivisor);    
 
-        setAffordablePayment(affordablePayment);
-        setAffordableLoan(affordableLoan);
-    }
+    //     setAffordablePayment(affordablePayment);
+    //     setAffordableLoan(affordableLoan);
+    // }
 
     const percentOfIncomeCalc = (income, salePrice, year, apr) => {
         const loan = salePrice - salePrice * .03
@@ -56,6 +56,8 @@ const App = () => {
 
         return percentOfIncome * 100;
     }
+
+    // console.log(percentOfIncomeCalc(10000, 30900, 30, .045))
 
     const handleTractData = income => {   
         // const income = event.target.value
@@ -86,7 +88,8 @@ const App = () => {
         <div style={{
             padding: padding
         }}>
-            <h2>Housing Affordability with an income of {numeral(income).format('$0,0')}</h2>
+            <h2 style={{lineHeight: '1em', textAlign: 'center', marginTop: '5px'}}>Home-ownership cost burden with a household income of...</h2>
+            <h1 style={{lineHeight: '1em', textAlign: 'center'}}> {numeral(income).format('$0,0')}</h1>
 
             <Slider value={income} settings={sliderSettings} color='red'/>
             {/* <input 
@@ -125,18 +128,19 @@ const App = () => {
                 Calculate Percent of Income to Afford
             </button> */}
             {/* <h3>{percentOfIncome ? `With an income of ${income}, the mortgage payment for a house costing ${salePrice} would be ${percentOfIncome.toFixed(1)}% of your income each month.` : null }</h3> */}
-            <h3> {tractData && percentOfIncome ?
-                'Below is a map of affordability across the region at that income...' : null}</h3>
+            {/* <h3> {tractData && percentOfIncome ?
+                'Below is a map of affordability across the region at that income...' : null}</h3> */}
             {/* <h3>Affordable Monthly Payment: ${affordablePayment}</h3> */}
             {/* <h3>Affordable Loan: ${affordableLoan}</h3> */}
             {/* {tractData ? tractData.map(tract => <p>{tract['Census Tract'] + ": " + tract['Percent of Income']}</p>) : null} */}
-            {tractData ? <div style={{ float: 'left', width: '100%', height: '65vh'}}>  
+            {tractData ? <div style={{ float: 'left', width: '100%', height: '65vh', marginTop: '20px'}}>  
                 <AffordabilityMap data={tractData} geojson={tractLayer} />                              
             </div> : null }
-            <h2>Proportion of income spent on mortgage payments* each month...</h2>
+            <h3>Proportion of household income spent on mortgage payments* each month...</h3>
             {tractData ? <ColorRamp /> : null }
-            <p style={{float: 'right', fontSize: '1.2em'}}><strong>*</strong>for a home priced at a census tract's median home value with  a 4.5% 30-year fixed mortgage</p>
-            <p style={{float: 'left'}}><strong>Data source:</strong> US Census Bureau, American Community Survey (ACS), 5-year estimates, 2013-17</p>
+            <p style={{float: 'left', fontSize: '1.2em'}}><strong>*</strong>for a home priced at a census tract's <em>median home value</em> with 4.5% 30-year fixed mortgage and 3% down payment</p>
+            <p style={{float: 'left'}}><strong>Analysis by:</strong> The Atlanta Regional Commission's (ARC), Research and Analytics Group</p>
+            <p style={{float: 'left'}}><strong>Data source:</strong> <a href='https://www.zillow.com/research/ztrax/'>Zillow. 2018. “ZTRAX: Zillow Transaction and Assessor Dataset, 2018-Q4.” Zillow Group, Inc.</a></p>
         </div>
     )
 };

@@ -2,7 +2,7 @@ import React from "react";
 // import API from "../../utils/API";
 import colormap from 'colormap';
 
-const colorRampWidth = 80;
+const colorRampWidth = 60;
 const lableWidth = (100 - colorRampWidth)/2
 
 const ColorRamp = props => {
@@ -33,7 +33,7 @@ const ColorRamp = props => {
                     borderRadius: '5px 0 0 5px',
                     // border: 'solid grey .8px', 
                     backgroundColor: 'white', 
-                    fontSize: '1.5em',
+                    fontSize: '1.2em',
                     textAlign: 'center',
                     float: 'left',
                     height: '100%',
@@ -65,7 +65,7 @@ const ColorRamp = props => {
                     // paddingTop: '8px',
                     // border: 'solid grey .8px', 
                     backgroundColor: 'white', 
-                    fontSize: '1.5em',
+                    fontSize: '1.2em',
                     textAlign: 'center',
                     float: 'left',
                     height: '100%',
