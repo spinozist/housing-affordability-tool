@@ -138,7 +138,7 @@ const App = () => {
             </div> : null }
             <h3>Proportion of household income spent on mortgage payments* each month...</h3>
             {tractData ? <ColorRamp /> : null }
-            <p style={{float: 'left', fontSize: '1.2em'}}><strong>*</strong>for a home priced at a census tract's <em>median home value</em> with 4.5% 30-year fixed mortgage and 3% down payment</p>
+            <p style={{float: 'left', fontSize: '1.2em'}}><strong>*</strong>for a home priced at a census tract's <em>median home sale price in 2018</em>, assuming a 4.5% 30-year fixed mortgage and 3% down payment</p>
             <p style={{float: 'left'}}><strong>Analysis by:</strong> The Atlanta Regional Commission's (ARC), Research and Analytics Group</p>
             <p style={{float: 'left'}}><strong>Data source:</strong> <a href='https://www.zillow.com/research/ztrax/'>Zillow. 2018. “ZTRAX: Zillow Transaction and Assessor Dataset, 2018-Q4.” Zillow Group, Inc.</a></p>
         </div>
