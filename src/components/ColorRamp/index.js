@@ -34,11 +34,12 @@ const ColorRamp = props => {
                     // border: 'solid grey .8px', 
                     backgroundColor: 'white', 
                     fontSize: '1.2em',
-                    textAlign: 'center',
+                    textAlign: 'right',
                     float: 'left',
                     height: '100%',
                     width: String(lableWidth) + '%',
                     marginBottom: '15px',
+                    paddingRight: '5px',
                     // zIndex: '999'
                 }}>
                 10% or less
@@ -66,11 +67,12 @@ const ColorRamp = props => {
                     // border: 'solid grey .8px', 
                     backgroundColor: 'white', 
                     fontSize: '1.2em',
-                    textAlign: 'center',
+                    textAlign: 'left',
                     float: 'left',
                     height: '100%',
                     width: String(lableWidth) + '%',
                     marginBottom: '15px',
+                    paddingLeft: '5px'
                     // zIndex: '999'
                 }}>
                 50% or more

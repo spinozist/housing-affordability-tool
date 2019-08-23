@@ -6,6 +6,8 @@ import AffordabilityMap from './components/AffordabilityMap';
 import ColorRamp from './components/ColorRamp'
 import API from './utils/API.js';
 import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from 'react-icons/io';
+import { MdPauseCircleFilled } from "react-icons/md";
+
 
 const data = require('./data/median-sale-price.json');
 
@@ -134,19 +136,41 @@ const App = () => {
             <h2 style={{lineHeight: '1em', textAlign: 'center', marginTop: '5px'}}>Home-ownership cost burden with a household income of...</h2>
             <h1 style={{lineHeight: '1em', textAlign: 'center'}}> {numeral(income).format('$0,0')}</h1>
             <div style={{float: 'left', width: '10%'}}>
-                <IoIosArrowDropleftCircle 
+                { playStatus.playing && playStatus.direction === 'reverse' ? 
+                <MdPauseCircleFilled 
                     style={{float: 'right', width: '30px', height: '30px'}} 
-                    onClick={() => !playStatus.playing ? setPlayStatus({playing: true, direction: 'reverse'}) : setPlayStatus({playing: false})}
-                />
+                    onClick={() => setPlayStatus({playing: false})}
+                /> :
+                <IoIosArrowDropleftCircle 
+                    style={{
+                        float: 'right', 
+                        width: '30px', 
+                        height: '30px', 
+                        fill: playStatus.direction === 'forward' && playStatus.playing ? 'lightgrey' : null
+                    }} 
+                    onClick={() => playStatus.direction === 'forward' && playStatus.playing ? null : setPlayStatus({playing: true, direction: 'reverse'})}
+                />}
             </div>
             <div style={{float: 'left', width: '80%'}}>
                 <Slider style={{float: 'center', width: '100%'}} value={income} settings={sliderSettings} color='red'/>
             </div>
             <div style={{float: 'left', width: '10%'}}>
-            <IoIosArrowDroprightCircle 
+            {playStatus.playing && playStatus.direction === 'forward' ?
+            <MdPauseCircleFilled 
                 style={{float: 'left', width: '30px',  height: '30px'}} 
-                onClick={() => !playStatus.playing ? setPlayStatus({playing: true, direction: 'forward'}) : setPlayStatus({playing: false})}
+                onClick={() => setPlayStatus({playing: false})}
+            /> :
+            <IoIosArrowDroprightCircle 
+                style={{
+                    float: 'left', 
+                    width: '30px',  
+                    height: '30px',
+                    fill: playStatus.direction === 'reverse' && playStatus.playing ? 'lightgrey' : null
+                }} 
+                onClick={() => playStatus.direction === 'reverse' && playStatus.playing ? null : setPlayStatus({playing: true, direction: 'forward'}) }
             />
+            }    
+            
             </div>
             {/* <input 
                 name='income'
@@ -192,7 +216,7 @@ const App = () => {
             {tractData ? <div style={{ float: 'left', width: '100%', height: '63vh', marginTop: '20px'}}>  
                 <AffordabilityMap data={tractData} geojson={tractLayer} />                              
             </div> : null }
-            <h3 style={{float: 'left', textAlign: 'center', marginTop: '15px', lineHeight: '20px'}}>
+            <h3 style={{float: 'left', textAlign: 'center', marginTop: '15px', lineHeight: '20px', width: '100%'}}>
                 Proportion of household income spent on mortgage payments* each month...
             </h3>
             {tractData ? <ColorRamp /> : null }
