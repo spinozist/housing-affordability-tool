@@ -24,7 +24,7 @@ const ColorRamp = props => {
 
     return (
 
-        <div style={{float: 'left', width: '100%', height: '5%', marginTop: '5px'}}>
+        <div style={{float: 'center', width: '100%', height: '5%', marginTop: '5px'}}>
             <div
                 style={{
                     // position: 'relative',

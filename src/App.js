@@ -84,7 +84,7 @@ const App = () => {
         let income = init;
 
         const increment = () => {
-            income > maxIncome || income < minIncome ? clearInterval() : setIncome(income);
+            income > maxIncome || income < minIncome ? setPlayStatus({ playing: false }) : setIncome(income);
             income = income + incomeSteps;
         }
 
@@ -136,7 +136,8 @@ const App = () => {
             <h2 style={{lineHeight: '1em', textAlign: 'center', marginTop: '5px'}}>Home-ownership cost burden with a household income of...</h2>
             <h1 style={{lineHeight: '1em', textAlign: 'center'}}> {numeral(income).format('$0,0')}</h1>
             <div style={{float: 'left', width: '10%'}}>
-                { playStatus.playing && playStatus.direction === 'reverse' ? 
+                { 
+                playStatus.playing && playStatus.direction === 'reverse' ? 
                 <MdPauseCircleFilled 
                     style={{float: 'right', width: '30px', height: '30px'}} 
                     onClick={() => setPlayStatus({playing: false})}
@@ -149,70 +150,30 @@ const App = () => {
                         fill: playStatus.direction === 'forward' && playStatus.playing ? 'lightgrey' : null
                     }} 
                     onClick={() => playStatus.direction === 'forward' && playStatus.playing ? null : setPlayStatus({playing: true, direction: 'reverse'})}
-                />}
+                />
+                }
             </div>
             <div style={{float: 'left', width: '80%'}}>
                 <Slider style={{float: 'center', width: '100%'}} value={income} settings={sliderSettings} color='red'/>
             </div>
             <div style={{float: 'left', width: '10%'}}>
-            {playStatus.playing && playStatus.direction === 'forward' ?
-            <MdPauseCircleFilled 
-                style={{float: 'left', width: '30px',  height: '30px'}} 
-                onClick={() => setPlayStatus({playing: false})}
-            /> :
-            <IoIosArrowDroprightCircle 
-                style={{
-                    float: 'left', 
-                    width: '30px',  
-                    height: '30px',
-                    fill: playStatus.direction === 'reverse' && playStatus.playing ? 'lightgrey' : null
-                }} 
-                onClick={() => playStatus.direction === 'reverse' && playStatus.playing ? null : setPlayStatus({playing: true, direction: 'forward'}) }
-            />
-            }    
-            
+                {
+                playStatus.playing && playStatus.direction === 'forward' ?
+                <MdPauseCircleFilled 
+                    style={{float: 'left', width: '30px',  height: '30px'}} 
+                    onClick={() => setPlayStatus({playing: false})}
+                /> :
+                <IoIosArrowDroprightCircle 
+                    style={{
+                        float: 'left', 
+                        width: '30px',  
+                        height: '30px',
+                        fill: playStatus.direction === 'reverse' && playStatus.playing ? 'lightgrey' : null
+                    }} 
+                    onClick={() => playStatus.direction === 'reverse' && playStatus.playing ? null : setPlayStatus({playing: true, direction: 'forward'}) }
+                />
+                }    
             </div>
-            {/* <input 
-                name='income'
-                placeholder='Enter Income'
-                value={income}
-                onChange={event => {
-                    setIncome(numeral(event.target.value).format('$0,0'))
-                    // setPercentOfIncome();
-                    // handleTractData(event)
-                }}
-            /> */}
-            {/* <input
-                style={{
-                    margin: 10
-                }} 
-                name='home-sale-price'
-                placeholder='Enter Sale Price'
-                value={salePrice}
-                onChange={event => {
-                    setSalePrice(numeral(event.target.value).format('$0,0'))
-                    setPercentOfIncome();
-                }}
-
-            />
-            <button
-                // onClick={() => affordableLoanCalc(income.value(), 30, .045)} 
-                onClick={() => {
-                    setPercentOfIncome(percentOfIncomeCalc(numeral(income).value(), numeral(salePrice).value(), 30, .045));
-                    handleTractData();
-                }}
-                style={{
-                    margin: 10
-                }}
-            >
-                Calculate Percent of Income to Afford
-            </button> */}
-            {/* <h3>{percentOfIncome ? `With an income of ${income}, the mortgage payment for a house costing ${salePrice} would be ${percentOfIncome.toFixed(1)}% of your income each month.` : null }</h3> */}
-            {/* <h3> {tractData && percentOfIncome ?
-                'Below is a map of affordability across the region at that income...' : null}</h3> */}
-            {/* <h3>Affordable Monthly Payment: ${affordablePayment}</h3> */}
-            {/* <h3>Affordable Loan: ${affordableLoan}</h3> */}
-            {/* {tractData ? tractData.map(tract => <p>{tract['Census Tract'] + ": " + tract['Percent of Income']}</p>) : null} */}
             {tractData ? <div style={{ float: 'left', width: '100%', height: '63vh', marginTop: '20px'}}>  
                 <AffordabilityMap data={tractData} geojson={tractLayer} />                              
             </div> : null }
