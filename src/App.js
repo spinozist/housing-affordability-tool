@@ -133,15 +133,21 @@ const App = () => {
         }}>
             <h2 style={{lineHeight: '1em', textAlign: 'center', marginTop: '5px'}}>Home-ownership cost burden with a household income of...</h2>
             <h1 style={{lineHeight: '1em', textAlign: 'center'}}> {numeral(income).format('$0,0')}</h1>
-            <IoIosArrowDropleftCircle 
-                style={{float: 'left', width: '30px', height: '30px'}} 
-                onClick={() => !playStatus.playing ? setPlayStatus({playing: true, direction: 'reverse'}) : setPlayStatus({playing: false})}
-            />
-            <Slider style={{float: 'left', width: '82%'}} value={income} settings={sliderSettings} color='red'/>
+            <div style={{float: 'left', width: '10%'}}>
+                <IoIosArrowDropleftCircle 
+                    style={{float: 'right', width: '30px', height: '30px'}} 
+                    onClick={() => !playStatus.playing ? setPlayStatus({playing: true, direction: 'reverse'}) : setPlayStatus({playing: false})}
+                />
+            </div>
+            <div style={{float: 'left', width: '80%'}}>
+                <Slider style={{float: 'center', width: '100%'}} value={income} settings={sliderSettings} color='red'/>
+            </div>
+            <div style={{float: 'left', width: '10%'}}>
             <IoIosArrowDroprightCircle 
                 style={{float: 'left', width: '30px',  height: '30px'}} 
                 onClick={() => !playStatus.playing ? setPlayStatus({playing: true, direction: 'forward'}) : setPlayStatus({playing: false})}
             />
+            </div>
             {/* <input 
                 name='income'
                 placeholder='Enter Income'
