@@ -9,6 +9,7 @@
     "numeral": "^2.0.6",
     "react": "^16.8.1",
     "react-dom": "^16.8.6",
+    "react-icons": "^3.7.0",
     "react-leaflet": "^2.4.0",
     "react-scripts": "^2.1.8",
     "react-semantic-ui-range": "^0.7.0",

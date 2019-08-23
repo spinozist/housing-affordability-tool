@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Slider } from 'react-semantic-ui-range';
+import { Button } from 'semantic-ui-react';
 import numeral from 'numeral';
 import AffordabilityMap from './components/AffordabilityMap';
 import ColorRamp from './components/ColorRamp'
 import API from './utils/API.js';
+import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from 'react-icons/io';
 
-
-const saleValueByTract = require('./data/median-sale-price.json');
-
-
+const data = require('./data/median-sale-price.json');
 
 const App = () => {
     const [income, setIncome] = useState(65381);
@@ -19,14 +18,23 @@ const App = () => {
     // const [affordableLoan, setAffordableLoan] = useState();
     const [tractLayer, setTractLayer] = useState();
     const padding = 10;
+    const maxIncome = 250000
+    const minIncome = 10000
 
     const sliderSettings = {
         start: income,
-        min: 10000,
-        max: 250000,
+        min: minIncome,
+        max: maxIncome,
         step: 1000,
         onChange: value => setIncome(value)
     }
+
+    const [ playStatus, setPlayStatus ] = useState({
+        direction: null,
+        playing: false,
+    });
+
+    const [timerID, setTimerID] = useState();
     // console.log(income);
 
     // const affordableLoanCalc = (income, year, apr) => {
@@ -49,9 +57,6 @@ const App = () => {
         const paymentMultiplier = (c * Math.pow((c + 1),n))/(Math.pow((c + 1), n) - 1);
         const monthlyPayment = loan * paymentMultiplier;
 
-        // console.log(salePrice)
-
-
         const percentOfIncome = monthlyPayment / monthlyIncome;
 
         return percentOfIncome * 100;
@@ -61,8 +66,8 @@ const App = () => {
 
     const handleTractData = income => {   
         // const income = event.target.value
-        const modTractData = saleValueByTract ? 
-            saleValueByTract.map(tract => ({
+        const modTractData = data ? 
+            data.map(tract => ({
                 'Census Tract' : tract['Census Tract'],
                 'Median Sale Price' : tract['Median Sale Price'],
                 // 'Income' : income,
@@ -70,6 +75,42 @@ const App = () => {
             })) : null
         setTractData(modTractData);
     }
+
+    const playSlider = (init, duration, status, steps) => {
+        
+        const incomeSteps = status.direction === 'forward' ? steps : status.direction === 'reverse' ? -1 * steps : steps;
+        let income = init;
+
+        const increment = () => {
+            income > maxIncome || income < minIncome ? clearInterval() : setIncome(income);
+            income = income + incomeSteps;
+        }
+
+        let timer = setInterval(increment, duration);
+
+        // console.log(timer)
+        setTimerID(timer)
+
+        // console.log(timerID);
+        // console.log(playStatus)
+
+
+        // const stop = () => clearInterval(start)
+
+        // const stop = () => !playStatus.playing ? clearInterval(play) : null
+        // playStatus.playing ? stop() : start()
+        // stop()
+    }
+
+    const stopSlider = () => {
+        // console.log(playStatus)
+        // console.log(timerID)
+        clearInterval(timerID)
+    }
+
+    const sliderStartStop = (init, duration, status, steps) => !playStatus.playing ? stopSlider() : 
+        playStatus.direction ? playSlider(init, duration, status, steps) : null;
+        
 
     const getGeoJSON = () => {
 
@@ -82,7 +123,9 @@ const App = () => {
 
     useEffect(() => getGeoJSON(), []);
 
-    useEffect(() => handleTractData(income), [income])
+    useEffect(() => handleTractData(income), [income]);
+
+    useEffect(() => sliderStartStop(income, 50, playStatus, 1000), [playStatus.playing])
 
     return(
         <div style={{
@@ -90,8 +133,15 @@ const App = () => {
         }}>
             <h2 style={{lineHeight: '1em', textAlign: 'center', marginTop: '5px'}}>Home-ownership cost burden with a household income of...</h2>
             <h1 style={{lineHeight: '1em', textAlign: 'center'}}> {numeral(income).format('$0,0')}</h1>
-
-            <Slider value={income} settings={sliderSettings} color='red'/>
+            <IoIosArrowDropleftCircle 
+                style={{float: 'left', width: '30px', height: '30px'}} 
+                onClick={() => !playStatus.playing ? setPlayStatus({playing: true, direction: 'reverse'}) : setPlayStatus({playing: false})}
+            />
+            <Slider style={{float: 'left', width: '82%'}} value={income} settings={sliderSettings} color='red'/>
+            <IoIosArrowDroprightCircle 
+                style={{float: 'left', width: '30px',  height: '30px'}} 
+                onClick={() => !playStatus.playing ? setPlayStatus({playing: true, direction: 'forward'}) : setPlayStatus({playing: false})}
+            />
             {/* <input 
                 name='income'
                 placeholder='Enter Income'
@@ -133,10 +183,12 @@ const App = () => {
             {/* <h3>Affordable Monthly Payment: ${affordablePayment}</h3> */}
             {/* <h3>Affordable Loan: ${affordableLoan}</h3> */}
             {/* {tractData ? tractData.map(tract => <p>{tract['Census Tract'] + ": " + tract['Percent of Income']}</p>) : null} */}
-            {tractData ? <div style={{ float: 'left', width: '100%', height: '65vh', marginTop: '20px'}}>  
+            {tractData ? <div style={{ float: 'left', width: '100%', height: '63vh', marginTop: '20px'}}>  
                 <AffordabilityMap data={tractData} geojson={tractLayer} />                              
             </div> : null }
-            <h3>Proportion of household income spent on mortgage payments* each month...</h3>
+            <h3 style={{float: 'left', textAlign: 'center', marginTop: '15px', lineHeight: '20px'}}>
+                Proportion of household income spent on mortgage payments* each month...
+            </h3>
             {tractData ? <ColorRamp /> : null }
             <p style={{float: 'left', fontSize: '1.2em'}}><strong>*</strong>for a home priced at a census tract's <em>median home value</em> with 4.5% 30-year fixed mortgage and 3% down payment</p>
             <p style={{float: 'left'}}><strong>Analysis by:</strong> The Atlanta Regional Commission's (ARC), Research and Analytics Group</p>
