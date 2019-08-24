@@ -7,10 +7,9 @@ const lableWidth = (100 - colorRampWidth)/2
 
 const ColorRamp = props => {
 
-    // console.log(props)
-
-    const numberOfBins = 72;
-    const colorMap = 'portland';
+    const numberOfBins = props.style.nshades;
+    const colorMap = props.style.colormap;
+    const marginBottom = props.marginBottom;
 
     const colors = colormap({
         colormap: colorMap,
@@ -23,58 +22,55 @@ const ColorRamp = props => {
     const binWidth = String(binWidthRatio) + "%";
 
     return (
-
-        <div style={{float: 'center', width: '100%', height: '5%', marginTop: '5px'}}>
+        <div 
+            style={{
+                float: 'center',
+                width: '100%',
+                height: '5%',
+                margin: '5px 0px 10px 0px'
+            }}
+        >
             <div
                 style={{
-                    // position: 'relative',
-                    // bottom: '60px',
-                    // paddingTop: '8px',
                     borderRadius: '5px 0 0 5px',
-                    // border: 'solid grey .8px', 
-                    backgroundColor: 'white', 
                     fontSize: '1.2em',
                     textAlign: 'right',
                     float: 'left',
                     height: '100%',
                     width: String(lableWidth) + '%',
-                    marginBottom: '15px',
+                    marginBottom: marginBottom,
                     paddingRight: '5px',
-                    // zIndex: '999'
-                }}>
+                }}
+            >
                 10% or less
             </div>
-        { colors ? colors.map(color => 
+            { 
+            colors ? 
+            colors.map(color => 
             <div 
-            style={{
-                // position: 'relative',
-                // bottom: '60px',
-                float: 'left',
-                height: '30px',
-                backgroundColor: color,
-                width: binWidth,
-                marginBottom: '15px',
-                opacity: 1,
-                zIndex: '999'
-            }}
-            />) : null}
-                    <div
                 style={{
-                    // position: 'relative',
-                    // bottom: '60px',
+                    float: 'left',
+                    height: '40px',
+                    backgroundColor: color,
+                    width: binWidth,
+                    marginBottom: marginBottom,
+                    opacity: props.style.opacity,
+                }}
+            />) 
+            : null
+            }
+            <div
+                style={{
                     borderRadius: '0 5px 5px 0',
-                    // paddingTop: '8px',
-                    // border: 'solid grey .8px', 
-                    backgroundColor: 'white', 
                     fontSize: '1.2em',
                     textAlign: 'left',
                     float: 'left',
                     height: '100%',
                     width: String(lableWidth) + '%',
-                    marginBottom: '15px',
+                    marginBottom: marginBottom,
                     paddingLeft: '5px'
-                    // zIndex: '999'
-                }}>
+                }}
+            >
                 50% or more
             </div>
         </div>

@@ -4,8 +4,8 @@ import colormap from 'colormap';
 
 const AffordabilityMap = props => {
 
-    const numberOfBins = 72;
-    const colorMap = 'portland';
+    const numberOfBins = props.style.nshades;
+    const colorMap = props.style.colormap;
       
     let colors = colormap({
       colormap: colorMap,
@@ -58,7 +58,7 @@ const AffordabilityMap = props => {
                 color: value < minValue ? colors[0] : value > maxValue ? colors[colors.length -1] : color,
                 weight: 1,
                 fillColor: value < minValue ? colors[0] : value > maxValue ? colors[colors.length -1] : color,
-                fillOpacity: value ? .9 : 0
+                fillOpacity: value ? props.style.opacity : 0
             })
           }}
         /> : null

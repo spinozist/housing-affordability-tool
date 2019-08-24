@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Slider } from 'react-semantic-ui-range';
-import { Button } from 'semantic-ui-react';
+// import { Button } from 'semantic-ui-react';
 import numeral from 'numeral';
 import AffordabilityMap from './components/AffordabilityMap';
 import ColorRamp from './components/ColorRamp'
@@ -12,23 +12,30 @@ import { MdPauseCircleFilled } from "react-icons/md";
 const data = require('./data/median-sale-price.json');
 
 const App = () => {
-    const [income, setIncome] = useState(65381);
-    const [tractData, setTractData] = useState();
+
     // const [affordablePayment, setAffordablePayment] = useState();
     // const [salePrice, setSalePrice] = useState();
     // const [percentOfIncome , setPercentOfIncome] = useState();
     // const [affordableLoan, setAffordableLoan] = useState();
+
+    const [income, setIncome] = useState(65381);
+    const [tractData, setTractData] = useState();    
     const [tractLayer, setTractLayer] = useState();
     const padding = 10;
     const maxIncome = 250000
     const minIncome = 10000
+    const style = {
+        colormap: 'portland',
+        nshades: 72,
+        opacity: .8
+    }
 
     const sliderSettings = {
         start: income,
         min: minIncome,
         max: maxIncome,
         step: 1000,
-        onChange: value => setIncome(value)
+        onChange: value => setIncome(value),
     }
 
     const [ playStatus, setPlayStatus ] = useState({
@@ -37,7 +44,6 @@ const App = () => {
     });
 
     const [timerID, setTimerID] = useState();
-    // console.log(income);
 
     // const affordableLoanCalc = (income, year, apr) => {
     //     const percentOfIncome = .2;
@@ -64,15 +70,11 @@ const App = () => {
         return percentOfIncome * 100;
     }
 
-    // console.log(percentOfIncomeCalc(10000, 30900, 30, .045))
-
     const handleTractData = income => {   
-        // const income = event.target.value
         const modTractData = data ? 
             data.map(tract => ({
                 'Census Tract' : tract['Census Tract'],
                 'Median Sale Price' : tract['Median Sale Price'],
-                // 'Income' : income,
                 'Percent of Income' :  percentOfIncomeCalc(numeral(income).value(), parseFloat(tract['Median Sale Price']), 30, .045)
             })) : null
         setTractData(modTractData);
@@ -80,6 +82,8 @@ const App = () => {
 
     const playSlider = (init, duration, status, steps) => {
         
+        // addSliderListner();
+
         const incomeSteps = status.direction === 'forward' ? steps : status.direction === 'reverse' ? -1 * steps : steps;
         let income = init;
 
@@ -90,30 +94,14 @@ const App = () => {
 
         let timer = setInterval(increment, duration);
 
-        // console.log(timer)
         setTimerID(timer)
-
-        // console.log(timerID);
-        // console.log(playStatus)
-
-
-        // const stop = () => clearInterval(start)
-
-        // const stop = () => !playStatus.playing ? clearInterval(play) : null
-        // playStatus.playing ? stop() : start()
-        // stop()
     }
 
-    const stopSlider = () => {
-        // console.log(playStatus)
-        // console.log(timerID)
-        clearInterval(timerID)
-    }
-
+    const stopSlider = () => clearInterval(timerID);
+    
     const sliderStartStop = (init, duration, status, steps) => !playStatus.playing ? stopSlider() : 
         playStatus.direction ? playSlider(init, duration, status, steps) : null;
         
-
     const getGeoJSON = () => {
 
         const url = `https://opendata.arcgis.com/datasets/798a9b46a48342e5a07cd9758623b839_157.geojson?where=PlanningRegion%20%3D%20'Atlanta%20Regional%20Commission'&outFields=GEOID`
@@ -123,11 +111,17 @@ const App = () => {
             .catch(err => console.error(err))
     }
 
+    // const addSliderListner = () => {
+    //     const slider = document.getElementsByClassName('semantic_ui_range_inner');
+    //     const addListener = slider.addEventListener('click', stopSlider());
+    //     addListener();
+    // }
+
     useEffect(() => getGeoJSON(), []);
 
     useEffect(() => handleTractData(income), [income]);
 
-    useEffect(() => sliderStartStop(income, 50, playStatus, 1000), [playStatus.playing])
+    useEffect(() => sliderStartStop(income, 50, playStatus, 1000), [playStatus.playing]);
 
     return(
         <div style={{
@@ -153,8 +147,13 @@ const App = () => {
                 />
                 }
             </div>
-            <div style={{float: 'left', width: '80%'}}>
-                <Slider style={{float: 'center', width: '100%'}} value={income} settings={sliderSettings} color='red'/>
+            <div onClick={playStatus.playing ? () => setPlayStatus({ playing: false }) : null} id={'income-slider'} style={{float: 'left', width: '80%'}}>
+                <Slider
+                    style={{float: 'center', width: '100%'}} 
+                    value={income} 
+                    settings={sliderSettings} 
+                    color='red'
+                    />
             </div>
             <div style={{float: 'left', width: '10%'}}>
                 {
@@ -175,12 +174,12 @@ const App = () => {
                 }    
             </div>
             {tractData ? <div style={{ float: 'left', width: '100%', height: '63vh', marginTop: '20px'}}>  
-                <AffordabilityMap data={tractData} geojson={tractLayer} />                              
+                <AffordabilityMap style={style} data={tractData} geojson={tractLayer} />                              
             </div> : null }
-            <h3 style={{float: 'left', textAlign: 'center', marginTop: '15px', lineHeight: '20px', width: '100%'}}>
+            <h3 style={{float: 'left', textAlign: 'center', marginTop: '5px', lineHeight: '20px', width: '100%'}}>
                 Proportion of household income spent on mortgage payments* each month...
             </h3>
-            {tractData ? <ColorRamp /> : null }
+            {tractData ? <ColorRamp marginBottom='20px' style={style} /> : null }
             <p style={{float: 'left', fontSize: '1.2em'}}><strong>*</strong>for a home priced at a census tract's <em>median home sale price in 2018</em>, assuming a 4.5% 30-year fixed mortgage and 3% down payment</p>
             <p style={{float: 'left'}}><strong>Analysis by:</strong> The Atlanta Regional Commission's (ARC), Research and Analytics Group</p>
             <p style={{float: 'left'}}><strong>Data source:</strong> <a href='https://www.zillow.com/research/ztrax/'>Zillow. 2018. “ZTRAX: Zillow Transaction and Assessor Dataset, 2018-Q4.” Zillow Group, Inc.</a></p>
